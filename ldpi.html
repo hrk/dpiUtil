@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<title>ldpi vs hdpi</title>
+		<style type="text/css">
+BODY {
+	background-color: #D4E9A9;
+	font-family: sans-serif;
+}
+
+DIV {
+	text-align: center;
+}
+TABLE {
+	margin-left: auto;
+	margin-right: auto;
+}
+TD {
+	text-align: center;
+}
+TD.fileName {
+	text-align: left;
+}
+TD.input {
+	text-align: left;
+}
+TR.even, TR.even TD {
+	background-color: #B4ED40;
+}
+IMG.ldpi {
+}
+		</style>
+		<script type="text/javascript" charset="UTF-8">
+		// <![CDATA[
+function get_names(f) {
+	var elements = f.elements;
+	var text = "";
+	for(var i = 0; i < elements.length; i++) {
+		if (elements[i].checked) {
+			text += elements[i].name + " \\r\\n";
+		}
+	}
+	return text;
+}
+function show_delete() {
+	var text = get_names(document.forms['onlyInLDPI']);
+	alert(text);
+}
+
+function show_generate() {
+	var text = get_names(document.forms['notInLDPI']);
+	alert(text);
+}
+
+function show_compare() {
+	var text = get_names(document.forms['common']);
+	alert(text);
+}
+	// ]]>
+		</script>
+	</head>
+	<body>
+		<h1>Only in LDPI: candidates for deletion.</h1>
+		${if onlyInLDPI}
+		<form action="#" id="onlyInLDPI">
+			<div>
+				<table id="t_onlyInLDPI" summary="Only in LDPI: candidates for deletion.">
+					<tbody>
+						${foreach onlyInLDPI ci}
+							<tr ${if even_ci}class="even"${end}>
+								<td class="fileName">${ci.ldpi.file.name}</td>
+								<td><img src="${ci.ldpi.file.absolutePAth}" width="${ci.ldpi.width}" height="${ci.ldpi.height}" class="ldpi" alt="${ci.ldpi.file.name}" /></td>
+								<td><input type="checkbox" name="${ci.ldpi.file.name}" checked="checked" /></td>
+							</tr>
+						${end}
+					</tbody>
+				</table>
+				<input class="input" type="button" onclick="javascript:show_delete();" value="Click me" />
+			</div>
+		</form>
+		${else}
+			<div class="emptyList">No files here.</div>
+		${end}
+
+		<h1>Only in HDPI: must be generated.</h1>
+		${if notInLDPI}
+		<form action="#" id="notInLDPI">
+			<div>
+				<table id="t_notInLDPI" summary="Only in HDPI: must be generated.">
+					<tbody>
+						${foreach notInLDPI ci}
+							<tr ${if even_ci}class="even"${end}>
+								<td class="fileName">${ci.hdpi.file.name}</td>
+								<td><img src="${ci.hdpi.file.absolutePath}" width="${ci.hdpi.width}" height="${ci.hdpi.height}" class="hdpi" alt="${ci.hdpi.file.name}" title="${ci.hdpi.file.absolutePath}"/></td>
+								<td>
+									${if ci.override}
+										<img src="${ci.override.file.absolutePath}" width="${ci.override.width}" height="${ci.override.height}" class="ldpi" alt="${ci.override.file.name}" title="${ci.override.file.absolutePath}" />
+									${end}
+								</td>
+								<td class="input"><input type="checkbox" name="${ci.hdpi.file.name}" ${if !ci.override}checked="checked"${end} /></td>
+							</tr>
+						${end}
+					</tbody>
+				</table>
+				<input type="button" onclick="javascript:show_generate();" value="Click me" />
+			</div>
+		</form>
+		${else}
+			<div class="emptyList">No files here.</div>
+		${end}
+
+		<h1>Common: compare &amp; select.</h1>
+		${if common}
+		<form action="#" id="common">
+			<div>
+				<table id="t_common" summary="Common: compare and select for generation.">
+					<tbody>
+						${foreach common ci}
+							<tr ${if even_ci}class="even"${end}>
+								<td class="fileName">${ci.ldpi.file.name}</td>
+								<td><img src="${ci.ldpi.file.absolutePath}" width="${ci.ldpi.width}" height="${ci.ldpi.height}" class="lapi" alt="${ci.ldpi.file.name}" /></td>
+								<td class="input"><input type="checkbox" name="${ci.ldpi.file.name}" /></td>
+								<td><img src="${ci.hdpi.file.absolutePath}" width="${ci.hdpi.width}" height="${ci.hdpi.height}" class="hapi" alt="${ci.hdpi.file.name}" /></td>
+								<td>
+									${if ci.override}
+										<img src="${ci.override.file.absolutePath}" width="${ci.override.width}" height="${ci.override.height}" class="ldpi" alt="${ci.override.file.name}" />
+									${end}
+								</td>
+							</tr>
+						${end}
+					</tbody>
+				</table>
+				<input type="button" onclick="javascript:show_compare();" value="Click me" />
+			</div>
+		</form>
+		${else}
+			<div class="emptyList">No files here.</div>
+		${end}
+
+	</body>
+</html>
